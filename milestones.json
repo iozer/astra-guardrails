@@ -1,0 +1,14 @@
+[
+  {
+    "title": "M0 \u2014 Public Launch",
+    "description": "Docs, templates, CI, and flagship demo ready"
+  },
+  {
+    "title": "M1 \u2014 Drop-in Adoption",
+    "description": "Init templates, middleware, and policy packs"
+  },
+  {
+    "title": "M2 \u2014 DevX & Tooling",
+    "description": "VS Code extension, LSP polish, workflows"
+  }
+]

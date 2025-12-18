@@ -1,0 +1,26 @@
+name: Pilot request
+description: Request to run Astra Guardrails in a limited-scope pilot
+title: "[Pilot]: "
+labels: ["pilot"]
+body:
+  - type: input
+    id: org
+    attributes:
+      label: Organization / Team
+      placeholder: "Team name (can be anonymized)"
+    validations:
+      required: true
+  - type: textarea
+    id: usecase
+    attributes:
+      label: Use case
+      description: Describe your LLM/ML workflow and where Astra sits.
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Contact
+      placeholder: "iozer@bandirma.edu.tr"
+    validations:
+      required: true

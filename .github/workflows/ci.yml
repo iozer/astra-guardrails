@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  meta:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Astra Guardrails CI"
+          echo "The guardrails job runs when this repo contains the Astra Python package (pyproject.toml/setup.py)."
+
+  guardrails:
+    name: Guardrails checks (${{ matrix.os }})
+    needs: meta
+    if: ${{ hashFiles('pyproject.toml') != '' || hashFiles('setup.py') != '' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Astra (repo package)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -U pip
+          python -m pip install -e .
+          astra --version
+
+      - name: Format check (examples)
+        shell: bash
+        run: |
+          set -euo pipefail
+          astra format examples/guardrails/02_policy_ok.astra.json --in-place
+          git diff --exit-code --ignore-cr-at-eol
+
+      - name: Effect check (examples)
+        shell: bash
+        run: |
+          set -euo pipefail
+          astra effectcheck examples/guardrails/02_policy_ok.astra.json --json
+
+      - name: Tests (examples)
+        shell: bash
+        run: |
+          set -euo pipefail
+          astra test examples/guardrails/02_policy_ok.astra.json --json

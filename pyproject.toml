@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "astra-llm-first"
+version = "1.1.0"
+description = "Astra: LLM-first JSON-AST programming language toolkit"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{name = "Astra Toolkit"}]
+license = {text = "MIT OR Apache-2.0"}
+keywords = ["llm", "programming-language", "json-ast", "lsp", "sandbox"]
+dependencies = ["jsonschema>=4.0.0"]
+
+[project.scripts]
+astra = "astra.cli:main"
+
+[tool.setuptools]
+packages = ["astra", "astra.tools", "astra.schema"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"astra.schema" = ["*.json"]
+
+
+

@@ -1,0 +1,93 @@
+[
+  {
+    "id": "01",
+    "title": "Publish policy templates: `astra init guardrails`",
+    "labels": [
+      "adoption",
+      "demo"
+    ],
+    "milestone": "M1 \u2014 Drop-in Adoption"
+  },
+  {
+    "id": "02",
+    "title": "Official policy pack: Tool allowlist + budget gate",
+    "labels": [
+      "adoption",
+      "safety",
+      "demo"
+    ],
+    "milestone": "M1 \u2014 Drop-in Adoption"
+  },
+  {
+    "id": "03",
+    "title": "VS Code extension packaging (thin client)",
+    "labels": [
+      "dx",
+      "adoption"
+    ],
+    "milestone": "M2 \u2014 DevX & Tooling"
+  },
+  {
+    "id": "04",
+    "title": "Reason codes convention + linting",
+    "labels": [
+      "adoption",
+      "dx"
+    ],
+    "milestone": "M1 \u2014 Drop-in Adoption"
+  },
+  {
+    "id": "05",
+    "title": "Python drop-in middleware for FastAPI",
+    "labels": [
+      "adoption",
+      "demo"
+    ],
+    "milestone": "M1 \u2014 Drop-in Adoption"
+  },
+  {
+    "id": "06",
+    "title": "Docs: threat model + non-goals",
+    "labels": [
+      "docs",
+      "safety"
+    ],
+    "milestone": "M0 \u2014 Public Launch"
+  },
+  {
+    "id": "07",
+    "title": "CI: Windows + Linux matrix + demo tests",
+    "labels": [
+      "dx",
+      "demo"
+    ],
+    "milestone": "M0 \u2014 Public Launch"
+  },
+  {
+    "id": "08",
+    "title": "Schema migration tool: `astra migrate`",
+    "labels": [
+      "adoption",
+      "dx"
+    ],
+    "milestone": "M0 \u2014 Public Launch"
+  },
+  {
+    "id": "09",
+    "title": "Property-based generators for guardrails inputs",
+    "labels": [
+      "safety",
+      "dx"
+    ],
+    "milestone": "M2 \u2014 DevX & Tooling"
+  },
+  {
+    "id": "10",
+    "title": "Public launch checklist + governance",
+    "labels": [
+      "docs",
+      "demo"
+    ],
+    "milestone": "M0 \u2014 Public Launch"
+  }
+]

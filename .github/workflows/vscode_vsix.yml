@@ -1,0 +1,36 @@
+name: VS Code Extension (VSIX)
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  build_vsix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build VSIX
+        working-directory: vscode-extension
+        run: |
+          npm install
+          npm run compile
+          npx @vscode/vsce package
+
+      - name: Upload VSIX to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: vscode-extension/*.vsix
+
+      - name: Upload VSIX artifact (manual run)
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: astra-guardrails-lsp-vsix
+          path: vscode-extension/*.vsix

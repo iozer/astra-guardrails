@@ -1,0 +1,141 @@
+{
+  "version": "1.0",
+  "module": "guardrails_demo",
+  "functions": [
+    {
+      "name": "decide_tool",
+      "params": [
+        "tool",
+        "host",
+        "estimated_cost"
+      ],
+      "param_types": [
+        "String",
+        "String",
+        "Int"
+      ],
+      "returns": "Record{decision:String,reason:String}",
+      "effects": [
+        "io.print"
+      ],
+      "body": [
+        {
+          "expr": {
+            "call": {
+              "fn": "print",
+              "args": [
+                "proposed_tool_call"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "cond": {
+              "call": {
+                "fn": "eq",
+                "args": [
+                  {
+                    "var": "tool"
+                  },
+                  "http_get"
+                ]
+              }
+            },
+            "then": [
+              {
+                "return": {
+                  "obj": {
+                    "decision": "DENY",
+                    "reason": "tool_blocked_by_default"
+                  }
+                }
+              }
+            ],
+            "else": [
+              {
+                "if": {
+                  "cond": {
+                    "call": {
+                      "fn": "gt",
+                      "args": [
+                        {
+                          "var": "estimated_cost"
+                        },
+                        100
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "return": {
+                        "obj": {
+                          "decision": "REVIEW",
+                          "reason": "budget_review"
+                        }
+                      }
+                    }
+                  ],
+                  "else": [
+                    {
+                      "return": {
+                        "obj": {
+                          "decision": "ALLOW",
+                          "reason": "tool_allowed"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "fn": "decide_tool",
+      "args": [
+        "http_get",
+        "example.com",
+        50
+      ],
+      "expect": {
+        "obj": {
+          "decision": "DENY",
+          "reason": "tool_blocked_by_default"
+        }
+      }
+    },
+    {
+      "fn": "decide_tool",
+      "args": [
+        "search",
+        "example.com",
+        200
+      ],
+      "expect": {
+        "obj": {
+          "decision": "REVIEW",
+          "reason": "budget_review"
+        }
+      }
+    },
+    {
+      "fn": "decide_tool",
+      "args": [
+        "search",
+        "example.com",
+        10
+      ],
+      "expect": {
+        "obj": {
+          "decision": "ALLOW",
+          "reason": "tool_allowed"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "name": "astra-guardrails-lsp",
+  "displayName": "Astra Guardrails (LSP)",
+  "description": "VS Code client for Astra Guardrails language server (astra lsp)",
+  "version": "0.0.1",
+  "publisher": "iozer",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:astra-json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "astra-json",
+        "aliases": [
+          "Astra JSON"
+        ],
+        "extensions": [
+          ".astra.json"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "configuration": {
+      "title": "Astra Guardrails",
+      "properties": {
+        "astra.serverCommand": {
+          "type": "string",
+          "default": "astra",
+          "description": "Command used to start the Astra LSP server"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npx @vscode/vsce package"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vscode": "^1.1.37"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iozer/astra-guardrails.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iozer/astra-guardrails/issues"
+  },
+  "homepage": "https://github.com/iozer/astra-guardrails#readme",
+  "keywords": [
+    "llm",
+    "guardrails",
+    "policy",
+    "lsp",
+    "security"
+  ],
+  "license": "MIT",
+  "icon": "media/icon.png"
+}
