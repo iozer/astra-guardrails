@@ -137,15 +137,6 @@ See `VSCODE_SETUP.md` for:
 
 ---
 
-## Public launch checklist
-
-- License: dual-licensed under **MIT OR Apache-2.0** (see `LICENSE-MIT` and `LICENSE-APACHE-2.0`).
-- Add `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`
-- Add labels + milestones (`labels.json`, `milestones.json`)
-- Open the first backlog issues (scripts included)
-- Publish a 30–45s demo clip (diagnostic → quick fix → minimal diff → tests pass)
-
----
 
 ---
 
