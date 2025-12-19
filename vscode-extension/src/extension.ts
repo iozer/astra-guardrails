@@ -27,7 +27,9 @@ export async function activate(context: vscode.ExtensionContext) {
     clientOptions
   );
 
-  context.subscriptions.push(client.start());
+  client.start();
+  context.subscriptions.push({ dispose: () => { void client?.stop(); } });
+
 }
 
 export async function deactivate(): Promise<void> {

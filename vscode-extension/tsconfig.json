@@ -8,7 +8,11 @@
       "ES2020"
     ],
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["node", "vscode"],
+    "skipLibCheck": true
   },
   "exclude": [
     "node_modules",
