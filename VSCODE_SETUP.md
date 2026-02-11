@@ -1,4 +1,3 @@
-\
 # VS Code setup (Astra Guardrails)
 
 ## Option A (recommended): build and install the included local VSIX

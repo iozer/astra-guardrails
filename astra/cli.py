@@ -20,6 +20,7 @@ Commands:
 - run-py        Execute via Python codegen sandbox
 - repair-loop   Closed-loop repair (deterministic + optional LLM provider)
 - lsp           Start LSP server (stdio)
+- version       Show current version
 
 Example:
   astra format examples/demo.json --in-place
@@ -86,9 +87,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 0
 
     cmd, rest = argv[0], argv[1:]
-     # global flags / pseudo-commands
-    if len(sys.argv) >= 2 and sys.argv[1] in ("--version", "-V", "version"):
+    # global flags / pseudo-commands
+    if cmd in ("--version", "-V", "version"):
         _print_version_and_exit()
+        return 0
     if cmd == "format":
         return fmt.main(rest)
     if cmd == "resolve":
