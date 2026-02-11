@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
 import subprocess
 import urllib.request
 from dataclasses import dataclass
@@ -125,8 +126,12 @@ def make_provider(kind: str, *, cmd: Optional[str] = None) -> LLMProvider:
     if kind == "cmd":
         if not cmd:
             raise ValueError("cmd provider requires --cmd")
-        # split like a shell would (simple)
-        command = cmd.split()
+        try:
+            command = shlex.split(cmd)
+        except ValueError as e:
+            raise ValueError(f"Invalid --cmd string: {e}") from e
+        if not command:
+            raise ValueError("cmd provider requires a non-empty command")
         return CmdProvider(command)
     if kind == "openai":
         return OpenAIProvider()
