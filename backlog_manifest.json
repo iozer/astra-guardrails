@@ -6,7 +6,7 @@
       "adoption",
       "demo"
     ],
-    "milestone": "M1 \u2014 Drop-in Adoption"
+    "milestone": "M1 — Drop-in Adoption"
   },
   {
     "id": "02",
@@ -16,7 +16,7 @@
       "safety",
       "demo"
     ],
-    "milestone": "M1 \u2014 Drop-in Adoption"
+    "milestone": "M1 — Drop-in Adoption"
   },
   {
     "id": "03",
@@ -25,7 +25,7 @@
       "dx",
       "adoption"
     ],
-    "milestone": "M2 \u2014 DevX & Tooling"
+    "milestone": "M2 — DevX & Tooling"
   },
   {
     "id": "04",
@@ -34,7 +34,7 @@
       "adoption",
       "dx"
     ],
-    "milestone": "M1 \u2014 Drop-in Adoption"
+    "milestone": "M1 — Drop-in Adoption"
   },
   {
     "id": "05",
@@ -43,7 +43,7 @@
       "adoption",
       "demo"
     ],
-    "milestone": "M1 \u2014 Drop-in Adoption"
+    "milestone": "M1 — Drop-in Adoption"
   },
   {
     "id": "06",
@@ -52,7 +52,7 @@
       "docs",
       "safety"
     ],
-    "milestone": "M0 \u2014 Public Launch"
+    "milestone": "M0 — Public Launch"
   },
   {
     "id": "07",
@@ -61,7 +61,7 @@
       "dx",
       "demo"
     ],
-    "milestone": "M0 \u2014 Public Launch"
+    "milestone": "M0 — Public Launch"
   },
   {
     "id": "08",
@@ -70,7 +70,7 @@
       "adoption",
       "dx"
     ],
-    "milestone": "M0 \u2014 Public Launch"
+    "milestone": "M0 — Public Launch"
   },
   {
     "id": "09",
@@ -79,7 +79,7 @@
       "safety",
       "dx"
     ],
-    "milestone": "M2 \u2014 DevX & Tooling"
+    "milestone": "M2 — DevX & Tooling"
   },
   {
     "id": "10",
@@ -88,6 +88,17 @@
       "docs",
       "demo"
     ],
-    "milestone": "M0 \u2014 Public Launch"
+    "milestone": "M0 — Public Launch"
+  },
+  {
+    "id": "11",
+    "title": "Codebase hygiene sweep: typo, bug, docs consistency, and test depth",
+    "labels": [
+      "dx",
+      "docs",
+      "bug",
+      "tests"
+    ],
+    "milestone": "M2 — DevX & Tooling"
   }
 ]
