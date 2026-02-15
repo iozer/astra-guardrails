@@ -1,0 +1,226 @@
+{
+  "version": "1.0",
+  "module": "customer_support_guardrails_v2",
+  "functions": [
+    {
+      "name": "decide_support_action",
+      "params": [
+        "tool",
+        "recipient_scope",
+        "risk_score",
+        "refund_amount",
+        "daily_refund_total",
+        "contains_pii"
+      ],
+      "param_types": [
+        "String",
+        "String",
+        "Int",
+        "Int",
+        "Int",
+        "Int"
+      ],
+      "returns": "Record{decision:String,reason:String}",
+      "effects": [
+        "pure"
+      ],
+      "body": [
+        {
+          "if": {
+            "cond": {
+              "call": {
+                "fn": "eq",
+                "args": [
+                  { "var": "tool" },
+                  "db_write"
+                ]
+              }
+            },
+            "then": [
+              {
+                "return": {
+                  "obj": {
+                    "decision": "DENY",
+                    "reason": "tool_denied_db_write"
+                  }
+                }
+              }
+            ],
+            "else": [
+              {
+                "if": {
+                  "cond": {
+                    "call": {
+                      "fn": "eq",
+                      "args": [
+                        { "var": "contains_pii" },
+                        1
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "if": {
+                        "cond": {
+                          "call": {
+                            "fn": "eq",
+                            "args": [
+                              { "var": "recipient_scope" },
+                              "external"
+                            ]
+                          }
+                        },
+                        "then": [
+                          {
+                            "return": {
+                              "obj": {
+                                "decision": "REVIEW",
+                                "reason": "approval_l2_pii_external"
+                              }
+                            }
+                          }
+                        ],
+                        "else": [
+                          {
+                            "return": {
+                              "obj": {
+                                "decision": "REVIEW",
+                                "reason": "approval_l1_pii_internal"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "else": [
+                    {
+                      "if": {
+                        "cond": {
+                          "call": {
+                            "fn": "gt",
+                            "args": [
+                              { "var": "risk_score" },
+                              80
+                            ]
+                          }
+                        },
+                        "then": [
+                          {
+                            "return": {
+                              "obj": {
+                                "decision": "REVIEW",
+                                "reason": "approval_l2_high_risk"
+                              }
+                            }
+                          }
+                        ],
+                        "else": [
+                          {
+                            "if": {
+                              "cond": {
+                                "call": {
+                                  "fn": "gt",
+                                  "args": [
+                                    { "var": "refund_amount" },
+                                    300
+                                  ]
+                                }
+                              },
+                              "then": [
+                                {
+                                  "return": {
+                                    "obj": {
+                                      "decision": "REVIEW",
+                                      "reason": "approval_l1_refund_amount"
+                                    }
+                                  }
+                                }
+                              ],
+                              "else": [
+                                {
+                                  "if": {
+                                    "cond": {
+                                      "call": {
+                                        "fn": "gt",
+                                        "args": [
+                                          { "var": "daily_refund_total" },
+                                          1000
+                                        ]
+                                      }
+                                    },
+                                    "then": [
+                                      {
+                                        "return": {
+                                          "obj": {
+                                            "decision": "REVIEW",
+                                            "reason": "approval_l2_daily_refund_budget"
+                                          }
+                                        }
+                                      }
+                                    ],
+                                    "else": [
+                                      {
+                                        "return": {
+                                          "obj": {
+                                            "decision": "ALLOW",
+                                            "reason": "support_action_allowed"
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "fn": "decide_support_action",
+      "args": ["db_write", "internal", 10, 10, 10, 0],
+      "expect": { "obj": { "decision": "DENY", "reason": "tool_denied_db_write" } }
+    },
+    {
+      "fn": "decide_support_action",
+      "args": ["send_email", "external", 20, 10, 10, 1],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l2_pii_external" } }
+    },
+    {
+      "fn": "decide_support_action",
+      "args": ["send_email", "internal", 20, 10, 10, 1],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l1_pii_internal" } }
+    },
+    {
+      "fn": "decide_support_action",
+      "args": ["issue_refund", "internal", 90, 10, 10, 0],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l2_high_risk" } }
+    },
+    {
+      "fn": "decide_support_action",
+      "args": ["issue_refund", "internal", 20, 350, 200, 0],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l1_refund_amount" } }
+    },
+    {
+      "fn": "decide_support_action",
+      "args": ["issue_refund", "internal", 20, 100, 1500, 0],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l2_daily_refund_budget" } }
+    },
+    {
+      "fn": "decide_support_action",
+      "args": ["kb_search", "internal", 20, 0, 0, 0],
+      "expect": { "obj": { "decision": "ALLOW", "reason": "support_action_allowed" } }
+    }
+  ]
+}

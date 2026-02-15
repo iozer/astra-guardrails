@@ -1,0 +1,258 @@
+{
+  "version": "1.0",
+  "module": "financial_transaction_guardrails_v2",
+  "functions": [
+    {
+      "name": "decide_transaction_action",
+      "params": [
+        "action",
+        "amount",
+        "risk_score",
+        "geo_mismatch",
+        "device_trust",
+        "velocity_24h",
+        "is_business_hours"
+      ],
+      "param_types": [
+        "String",
+        "Int",
+        "Int",
+        "Int",
+        "String",
+        "Int",
+        "Int"
+      ],
+      "returns": "Record{decision:String,reason:String}",
+      "effects": [
+        "pure"
+      ],
+      "body": [
+        {
+          "if": {
+            "cond": {
+              "call": {
+                "fn": "eq",
+                "args": [
+                  { "var": "action" },
+                  "international_wire"
+                ]
+              }
+            },
+            "then": [
+              {
+                "return": {
+                  "obj": {
+                    "decision": "DENY",
+                    "reason": "action_denied_international_wire"
+                  }
+                }
+              }
+            ],
+            "else": [
+              {
+                "if": {
+                  "cond": {
+                    "call": {
+                      "fn": "gt",
+                      "args": [
+                        { "var": "risk_score" },
+                        85
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "return": {
+                        "obj": {
+                          "decision": "REVIEW",
+                          "reason": "approval_l3_risk_score"
+                        }
+                      }
+                    }
+                  ],
+                  "else": [
+                    {
+                      "if": {
+                        "cond": {
+                          "call": {
+                            "fn": "gt",
+                            "args": [
+                              { "var": "amount" },
+                              10000
+                            ]
+                          }
+                        },
+                        "then": [
+                          {
+                            "return": {
+                              "obj": {
+                                "decision": "REVIEW",
+                                "reason": "approval_l2_high_amount"
+                              }
+                            }
+                          }
+                        ],
+                        "else": [
+                          {
+                            "if": {
+                              "cond": {
+                                "call": {
+                                  "fn": "eq",
+                                  "args": [
+                                    { "var": "geo_mismatch" },
+                                    1
+                                  ]
+                                }
+                              },
+                              "then": [
+                                {
+                                  "return": {
+                                    "obj": {
+                                      "decision": "REVIEW",
+                                      "reason": "approval_l2_geo_mismatch"
+                                    }
+                                  }
+                                }
+                              ],
+                              "else": [
+                                {
+                                  "if": {
+                                    "cond": {
+                                      "call": {
+                                        "fn": "eq",
+                                        "args": [
+                                          { "var": "device_trust" },
+                                          "low"
+                                        ]
+                                      }
+                                    },
+                                    "then": [
+                                      {
+                                        "return": {
+                                          "obj": {
+                                            "decision": "REVIEW",
+                                            "reason": "approval_l1_low_device_trust"
+                                          }
+                                        }
+                                      }
+                                    ],
+                                    "else": [
+                                      {
+                                        "if": {
+                                          "cond": {
+                                            "call": {
+                                              "fn": "gt",
+                                              "args": [
+                                                { "var": "velocity_24h" },
+                                                5
+                                              ]
+                                            }
+                                          },
+                                          "then": [
+                                            {
+                                              "return": {
+                                                "obj": {
+                                                  "decision": "REVIEW",
+                                                  "reason": "approval_l2_velocity_limit"
+                                                }
+                                              }
+                                            }
+                                          ],
+                                          "else": [
+                                            {
+                                              "if": {
+                                                "cond": {
+                                                  "call": {
+                                                    "fn": "eq",
+                                                    "args": [
+                                                      { "var": "is_business_hours" },
+                                                      0
+                                                    ]
+                                                  }
+                                                },
+                                                "then": [
+                                                  {
+                                                    "return": {
+                                                      "obj": {
+                                                        "decision": "REVIEW",
+                                                        "reason": "approval_l1_off_hours"
+                                                      }
+                                                    }
+                                                  }
+                                                ],
+                                                "else": [
+                                                  {
+                                                    "return": {
+                                                      "obj": {
+                                                        "decision": "ALLOW",
+                                                        "reason": "transaction_allowed"
+                                                      }
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "fn": "decide_transaction_action",
+      "args": ["international_wire", 100, 20, 0, "high", 1, 1],
+      "expect": { "obj": { "decision": "DENY", "reason": "action_denied_international_wire" } }
+    },
+    {
+      "fn": "decide_transaction_action",
+      "args": ["transfer", 100, 90, 0, "high", 1, 1],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l3_risk_score" } }
+    },
+    {
+      "fn": "decide_transaction_action",
+      "args": ["transfer", 20000, 30, 0, "high", 1, 1],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l2_high_amount" } }
+    },
+    {
+      "fn": "decide_transaction_action",
+      "args": ["transfer", 100, 30, 1, "high", 1, 1],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l2_geo_mismatch" } }
+    },
+    {
+      "fn": "decide_transaction_action",
+      "args": ["transfer", 100, 30, 0, "low", 1, 1],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l1_low_device_trust" } }
+    },
+    {
+      "fn": "decide_transaction_action",
+      "args": ["transfer", 100, 30, 0, "high", 7, 1],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l2_velocity_limit" } }
+    },
+    {
+      "fn": "decide_transaction_action",
+      "args": ["transfer", 100, 30, 0, "high", 2, 0],
+      "expect": { "obj": { "decision": "REVIEW", "reason": "approval_l1_off_hours" } }
+    },
+    {
+      "fn": "decide_transaction_action",
+      "args": ["transfer", 100, 30, 0, "high", 2, 1],
+      "expect": { "obj": { "decision": "ALLOW", "reason": "transaction_allowed" } }
+    }
+  ]
+}
